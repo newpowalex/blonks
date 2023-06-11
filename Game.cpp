@@ -78,7 +78,7 @@ void Game::render()
         - render objects
         -display frame in window
     */
-    this->window->clear(sf::Color(255, 0, 0, 255));
+    this->window->clear();
 
     //Draw game objects
     this->window->draw(this->enemy);
