@@ -66,6 +66,9 @@ void Game::pollEvents()
 void Game::update()
 {
     this->pollEvents();
+
+    //Update mouse position
+    std::cout << "Mouse pos: " << sf::Mouse::getPosition().x << " " << sf::Mouse::getPosition().y << "\n";
 }
 
 void Game::render()
