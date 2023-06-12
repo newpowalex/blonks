@@ -63,6 +63,11 @@ void Game::pollEvents()
     }
 }
 
+void Game::updateMousePos()
+{
+    
+}
+
 void Game::update()
 {
     this->pollEvents();
