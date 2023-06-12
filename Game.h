@@ -20,6 +20,9 @@ class Game
     sf::VideoMode videoMode;
     sf::Event ev;
 
+    //Mouse positions
+    sf::Vector2i mousePosWindow;
+
     //Game objects
     sf::RectangleShape enemy;
 
@@ -39,6 +42,7 @@ class Game
 
         //Function
         void pollEvents();
+        void updateMousePos();
         void update();
         void render();
 };
