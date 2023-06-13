@@ -23,6 +23,12 @@ class Game
     //Mouse positions
     sf::Vector2i mousePosWindow;
 
+    //Game logic
+    int points;
+    float enemySpawnTimer;
+    float enemySpawnTimerMax;
+    int maxEnemies;
+
     //Game objects
     std::vector<sf::RectangleShape> enemies;
     sf::RectangleShape enemy;
@@ -42,7 +48,7 @@ class Game
         const bool running() const;
 
         //Function
-        void spawnEnemies();
+        void spawnEnemy();
         void pollEvents();
 
         void updateMousePos();
