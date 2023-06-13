@@ -61,6 +61,16 @@ void Game::spawnEnemy()
         -Sets a random color.
         -Adds enemy to the vector
     */
+
+    this->enemy.setPosition(
+        static_cast<float>(rand() % static_cast<int>(this->window->getSize().x - this->enemy.getSize().x)),
+        static_cast<float>(rand() % static_cast<int>(this->window->getSize().y - this->enemy.getSize().y))
+    );
+
+    this->enemy.setFillColor(sf::Color::Green);
+
+    //Spawn the enemy
+    this->enemies.push_back(this->enemy);
 }
 
 void Game::pollEvents()
@@ -88,6 +98,7 @@ void Game::updateEnemies()
 
         Updates the enemy spawn timer and spawns the enemies
         when the total amount of enemies is smalled than the maximum.
+        Moves the enemies downwards
     */
 
     //Updating the timer for enemy spawing
