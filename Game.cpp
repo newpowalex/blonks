@@ -45,6 +45,11 @@ const bool Game::running() const
 }
 
 //Functions
+void Game::spawnEnemies()
+{
+
+}
+
 void Game::pollEvents()
 {
     //Event Polling
@@ -61,6 +66,11 @@ void Game::pollEvents()
             break;
         }
     }
+}
+
+void Game::updateEnemies()
+{
+
 }
 
 void Game::updateMousePos()
@@ -81,6 +91,13 @@ void Game::update()
 
     this->updateMousePos();
 
+    this->updateEnemies();
+
+}
+
+void Game::renderEnemies()
+{
+
 }
 
 void Game::render()
@@ -96,7 +113,7 @@ void Game::render()
     this->window->clear();
 
     //Draw game objects
-    this->window->draw(this->enemy);
+    this->renderEnemies();
 
     this->window->display();
 }
