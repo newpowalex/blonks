@@ -42,10 +42,13 @@ class Game
         const bool running() const;
 
         //Function
-        void spawnEnemy();
-
+        void spawnEnemies();
         void pollEvents();
+
         void updateMousePos();
+        void updateEnemies();
         void update();
+
+        void renderEnemies();
         void render();
 };
