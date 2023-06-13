@@ -24,6 +24,7 @@ class Game
     sf::Vector2i mousePosWindow;
 
     //Game objects
+    std::vector<sf::RectangleShape> enemies;
     sf::RectangleShape enemy;
 
     //Private functions
@@ -41,6 +42,8 @@ class Game
         const bool running() const;
 
         //Function
+        void spawnEnemy();
+
         void pollEvents();
         void updateMousePos();
         void update();
