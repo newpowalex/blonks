@@ -2,6 +2,8 @@
 
 #include <iostream>
 #include <ctime>
+#include <chrono>
+#include <thread>
 
 #include <SFML/Graphics.hpp>
 #include <SFML/System.hpp>
@@ -17,7 +19,7 @@ class Game
     private:
     //Variables
 
-    //Font
+    //Resources
     sf::Font font;
 
     //Window
@@ -36,7 +38,9 @@ class Game
     int maxEnemies;
 
     //Start Screen Objects
+    bool playButtonVisible;
     sf::RectangleShape playButton;
+    sf::Text titleText;
     sf::Text playText;
 
     //Game objects
@@ -87,6 +91,7 @@ class Game
         //Start Screen
         const sf::RectangleShape& getPlayButton() const;
         sf::Text& getPlayText();
+        sf::Text& getTitleText();
         void handleMouseButtonPressed();
         void handleMouseMoved();
         
