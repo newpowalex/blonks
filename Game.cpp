@@ -4,20 +4,6 @@ void Game::initVariables()
 {
     this->window = nullptr;
     this->gameState = GameState::StartScreen;
-
-    // Initialize the play button
-    this->playButton.setSize(sf::Vector2f(100.f, 40.f));
-    this->playButton.setPosition(330.f, 300.f);
-    this->playButton.setFillColor(sf::Color::Black);
-    this->playButton.setOutlineColor(sf::Color::White);
-    this->playButton.setOutlineThickness(2.f);
-    
-    // Initialize the play text
-    this->playText.setFont(font);
-    this->playText.setString("Play");
-    this->playText.setCharacterSize(24);
-    this->playText.setFillColor(sf::Color::White); // Set the initial color to white
-    this->playText.setPosition(333.5f, 310.f); // Adjust position if needed
 }
 
 void Game::initWindow()
@@ -49,6 +35,23 @@ void Game::initFonts()
         exit(EXIT_FAILURE); // or handle the error as needed
         }
     }
+}
+
+void Game::initStartScreen()
+{
+    // Initialize the play button
+    this->playButton.setSize(sf::Vector2f(100.f, 40.f));
+    this->playButton.setPosition(330.f, 300.f);
+    this->playButton.setFillColor(sf::Color::Black);
+    this->playButton.setOutlineColor(sf::Color::White);
+    this->playButton.setOutlineThickness(2.f);
+    
+    // Initialize the play text
+    this->playText.setFont(font);
+    this->playText.setString("Play");
+    this->playText.setCharacterSize(24);
+    this->playText.setFillColor(sf::Color::White); // Set the initial color to white
+    this->playText.setPosition(333.5f, 310.f); // Adjust position if needed
 }
 
 void Game::initEnemies()
