@@ -16,6 +16,10 @@ class Game
 {
     private:
     //Variables
+
+    //Font
+    sf::Font font;
+
     //Window
     sf::RenderWindow* window;
     sf::VideoMode videoMode;
@@ -49,14 +53,36 @@ class Game
         //Accessors
         const bool running() const;
 
-        //Function
-        void spawnEnemy();
+        //Functions
+        //Game State
+        enum class GameState
+        {
+            StartScreen,
+            InGame
+        };
+
+        //Game State
+        GameState gameState;
+
+        GameState getGameState() const;
+        void setGameState(GameState state);
+
+        //Polling
         void pollEvents();
 
-        void updateMousePos();
+        //Rendering
+        void renderEnemies();
+        void renderStartScreen();
+        void render();
+
+        //Spawning
+        void spawnEnemy();
+        
+        //Updating
         void updateEnemies();
+        void updateMousePos();
+        void updateStartScreen();
         void update();
 
-        void renderEnemies();
-        void render();
+        
 };
