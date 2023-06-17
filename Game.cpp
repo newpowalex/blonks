@@ -41,24 +41,29 @@ void Game::initStartScreen()
     // Initialize the title text
     this->titleText.setFont(font);
     this->titleText.setString("Buzo"); // Set the title text
-    this->titleText.setCharacterSize(40);
+    this->titleText.setCharacterSize(80);
     this->titleText.setFillColor(sf::Color::White);
     this->titleText.setStyle(sf::Text::Bold);
-    this->titleText.setPosition(300.f, 200.f); // Set the position of the title text
+    this->titleText.setPosition(400.f, 200.f); // Set the position of the title text
+
+    titlePos.x = window->getSize().x / 2.0f - titleText.getLocalBounds().width / 2.f;
+    titlePos.y = 100.f; // Adjust the y-coordinate based on your desired position
 
     // Initialize the play button
     this->playButton.setSize(sf::Vector2f(100.f, 40.f));
-    this->playButton.setPosition(330.f, 300.f);
+    this->playButton.setPosition(350.f, 300.f);
     this->playButton.setFillColor(sf::Color::Black);
     this->playButton.setOutlineColor(sf::Color::White);
     this->playButton.setOutlineThickness(2.f);
+
+    playButtonClicked = false;
 
     // Initialize the play text
     this->playText.setFont(font);
     this->playText.setString("Play");
     this->playText.setCharacterSize(24);
     this->playText.setFillColor(sf::Color::White); // Set the initial color to white
-    this->playText.setPosition(333.5f, 310.f);     // Adjust position if needed
+    this->playText.setPosition(353.f, 310.f);     // Adjust position if needed
 }
 
 void Game::initEnemies()
@@ -151,15 +156,21 @@ void Game::handleMouseButtonPressed()
 
         if (getPlayButton().getGlobalBounds().contains(mousePosView))
         {
+            //Change the title color and remove play button
             titleText.setFillColor(sf::Color::Red);
             titleText.setOutlineColor(sf::Color::White);
             titleText.setOutlineThickness(2.f);
-
-            playButtonVisible = false;
-
+            playButtonClicked = true;
             renderStartScreen();
 
-            // Pause for 2 seconds (adjust the duration as needed)
+            // Slide down the title text
+            while (titlePos.y < window->getSize().y / 2.0f - titleText.getLocalBounds().height / 2.0f)
+            {
+                titlePos.y += 1.0f; // Adjust the sliding speed as needed
+                renderStartScreen();
+            }
+
+            // Pause for 2 seconds
             std::this_thread::sleep_for(std::chrono::milliseconds(2000));
 
             setGameState(GameState::InGame);
@@ -250,11 +261,14 @@ void Game::renderStartScreen()
     // Draw the start screen objects (e.g., title, instructions, etc.)
     // using the window's draw function
 
+    // Set the position of the title text
+    titleText.setPosition(titlePos);
+
     // Render the title text
     this->window->draw(this->getTitleText());
 
     //Check if play button should be visible
-    if (playButtonVisible)
+    if (!playButtonClicked)
     {
         // Draw the play button
         window->draw(getPlayButton());
