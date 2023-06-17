@@ -87,6 +87,8 @@ class Game
         //Start Screen
         const sf::RectangleShape& getPlayButton() const;
         sf::Text& getPlayText();
+        void handleMouseButtonPressed();
+        void handleMouseMoved();
         
         //Updating
         void updateEnemies();
