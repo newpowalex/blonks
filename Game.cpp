@@ -31,13 +31,21 @@ void Game::initFonts()
         if (!font.loadFromFile("arial.ttf"))
         {
             std::cerr << "Failed to load fallback font." << std::endl;
-            exit(EXIT_FAILURE); // or handle the error as needed
+            exit(EXIT_FAILURE);
         }
     }
 }
 
 void Game::initStartScreen()
 {
+    // Initialize the title text
+    this->titleText.setFont(font);
+    this->titleText.setString("Buzo"); // Set the title text
+    this->titleText.setCharacterSize(40);
+    this->titleText.setFillColor(sf::Color::White);
+    this->titleText.setStyle(sf::Text::Bold);
+    this->titleText.setPosition(300.f, 200.f); // Set the position of the title text
+
     // Initialize the play button
     this->playButton.setSize(sf::Vector2f(100.f, 40.f));
     this->playButton.setPosition(330.f, 300.f);
@@ -143,6 +151,17 @@ void Game::handleMouseButtonPressed()
 
         if (getPlayButton().getGlobalBounds().contains(mousePosView))
         {
+            titleText.setFillColor(sf::Color::Red);
+            titleText.setOutlineColor(sf::Color::White);
+            titleText.setOutlineThickness(2.f);
+
+            playButtonVisible = false;
+
+            renderStartScreen();
+
+            // Pause for 2 seconds (adjust the duration as needed)
+            std::this_thread::sleep_for(std::chrono::milliseconds(2000));
+
             setGameState(GameState::InGame);
         }
     }
@@ -208,6 +227,11 @@ sf::Text &Game::getPlayText()
     return playText;
 }
 
+sf::Text &Game::getTitleText()
+{
+    return titleText;
+}
+
 ///////////////
 // Rendering //
 ///////////////
@@ -226,27 +250,18 @@ void Game::renderStartScreen()
     // Draw the start screen objects (e.g., title, instructions, etc.)
     // using the window's draw function
 
-    // Set the cursor to the arrow cursor
-    this->window->setMouseCursorVisible(true);
-    sf::Cursor cursor;
-    if (cursor.loadFromSystem(sf::Cursor::Arrow))
+    // Render the title text
+    this->window->draw(this->getTitleText());
+
+    //Check if play button should be visible
+    if (playButtonVisible)
     {
-        this->window->setMouseCursor(cursor);
+        // Draw the play button
+        window->draw(getPlayButton());
+
+        // Draw the play text
+        window->draw(getPlayText());
     }
-
-    // Create a title text object
-    sf::Text titleText;
-    titleText.setFont(font);
-    titleText.setString("Buzo"); // Set the title text
-    titleText.setCharacterSize(40);
-    titleText.setFillColor(sf::Color::White);
-    titleText.setStyle(sf::Text::Bold);
-    titleText.setPosition(300.f, 200.f); // Set the position of the title text
-
-    // Render the play button and title text
-    this->window->draw(titleText);
-    this->window->draw(this->getPlayButton());
-    this->window->draw(this->getPlayText());
 
     // Display the frame in the window
     this->window->display();
