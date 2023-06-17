@@ -35,6 +35,11 @@ void Game::initWindow()
     this->enemySpawnTimer = this->enemySpawnTimerMax;
     this->maxEnemies = 5;
 
+    
+}
+
+void Game::initFonts()
+{
     if (!font.loadFromFile("PressStart2P.ttf"))
     {
         // Failed to load the desired font, fall back to a random font
@@ -62,6 +67,7 @@ Game::Game()
     this->initVariables();
     this->initWindow();
     this->initEnemies();
+    this->initFonts();
 }
 
 Game::~Game()
