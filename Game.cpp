@@ -4,6 +4,20 @@ void Game::initVariables()
 {
     this->window = nullptr;
     this->gameState = GameState::StartScreen;
+
+    // Initialize the play button
+    this->playButton.setSize(sf::Vector2f(100.f, 40.f));
+    this->playButton.setPosition(330.f, 300.f);
+    this->playButton.setFillColor(sf::Color::Black);
+    this->playButton.setOutlineColor(sf::Color::White);
+    this->playButton.setOutlineThickness(2.f);
+    
+    // Initialize the play text
+    this->playText.setFont(font);
+    this->playText.setString("Play");
+    this->playText.setCharacterSize(24);
+    this->playText.setFillColor(sf::Color::White); // Set the initial color to white
+    this->playText.setPosition(333.5f, 310.f); // Adjust position if needed
 }
 
 void Game::initWindow()
@@ -17,7 +31,7 @@ void Game::initWindow()
 
     // Game logic
     this->points = 0;
-    this->enemySpawnTimerMax = 1000.f;
+    this->enemySpawnTimerMax = 20.f;
     this->enemySpawnTimer = this->enemySpawnTimerMax;
     this->maxEnemies = 5;
 
@@ -37,9 +51,9 @@ void Game::initEnemies()
     this->enemy.setPosition(10.f, 10.f);
     this->enemy.setSize(sf::Vector2f(100.f, 100.f));
     this->enemy.setScale(sf::Vector2f(0.5f, 0.5f));
-    this->enemy.setFillColor(sf::Color::Cyan);
-    this->enemy.setOutlineColor(sf::Color::Green);
-    this->enemy.setOutlineThickness(1.f);
+    this->enemy.setFillColor(sf::Color::Red);
+    this->enemy.setOutlineColor(sf::Color::White);
+    this->enemy.setOutlineThickness(4.f);
 }
 
 // Constructors / Destructors
@@ -94,15 +108,16 @@ void Game::pollEvents()
     {
         switch (this->ev.type)
         {
+        // If the window closes
         case sf::Event::Closed:
             this->window->close();
             break;
+        // If escape is pressed to exit
         case sf::Event::KeyPressed:
             if (this->ev.key.code == sf::Keyboard::Escape)
                 this->window->close();
-            else if (this->gameState == GameState::StartScreen && this->ev.key.code == sf::Keyboard::Space)
-                this->gameState = GameState::InGame;
             break;
+        // If mouse clicks on play button
         case sf::Event::MouseButtonPressed:
             if (this->gameState == GameState::StartScreen && this->ev.mouseButton.button == sf::Mouse::Left)
             {
@@ -113,15 +128,34 @@ void Game::pollEvents()
                 sf::Vector2f mousePosView = this->window->mapPixelToCoords(mousePosWindow);
 
                 // Check if the mouse is inside the play button
-                sf::RectangleShape playButton(sf::Vector2f(100.f, 40.f));
-                playButton.setPosition(350.f, 300.f);
-                if (playButton.getGlobalBounds().contains(mousePosView))
+                if (getPlayButton().getGlobalBounds().contains(mousePosView))
                 {
                     // Start the game by changing the game state
                     setGameState(GameState::InGame);
                 }
             }
             break;
+        // If mouse hovers over play button
+        case sf::Event::MouseMoved:
+                if (this->gameState == GameState::StartScreen)
+                {
+                    sf::Vector2i mousePosWindow = sf::Mouse::getPosition(*this->window);
+                    sf::Vector2f mousePosView = this->window->mapPixelToCoords(mousePosWindow);
+
+                    if (getPlayButton().getGlobalBounds().contains(mousePosView))
+                    {
+                        // Change the color of the text and fill of the play button when hovered
+                        playButton.setFillColor(sf::Color::White);
+                        playText.setFillColor(sf::Color::Black);
+                    }
+                    else
+                    {
+                        // Reset the colors when not hovered
+                        playButton.setFillColor(sf::Color::Black);
+                        playText.setFillColor(sf::Color::White);
+                    }
+                }
+                break;
         }
     }
 }
@@ -139,7 +173,6 @@ void Game::spawnEnemy()
 
         Spawns enemies and sets their colors and positions.
         -Sets a random postion.
-        -Sets a random color.
         -Adds enemy to the vector
     */
 
@@ -148,12 +181,26 @@ void Game::spawnEnemy()
         0.f
     );
 
-    this->enemy.setFillColor(sf::Color::Green);
-
     //Spawn the enemy
     this->enemies.push_back(this->enemy);
 
     //Remove enemies at the end of the screen
+}
+
+
+
+//////////////////
+// Start Screen //
+//////////////////
+
+const sf::RectangleShape& Game::getPlayButton() const
+{
+    return playButton; // Return a reference to the play button rectangle
+}
+
+sf::Text& Game::getPlayText()
+{
+    return playText;
 }
 
 
@@ -193,31 +240,10 @@ void Game::renderStartScreen()
     titleText.setStyle(sf::Text::Bold);
     titleText.setPosition(300.f, 200.f);  // Set the position of the title text
 
-    // Render the title text
+    // Render the play button and title text
     this->window->draw(titleText);
-
-    // Create a play button
-    sf::RectangleShape playButton(sf::Vector2f(100.f, 40.f));
-    playButton.setPosition(330.f, 300.f);
-    playButton.setFillColor(sf::Color::White);
-
-    // Create the play button text
-    sf::Text playButtonText;
-    playButtonText.setFont(font);
-    playButtonText.setString("Play");
-    playButtonText.setCharacterSize(20);
-    playButtonText.setFillColor(sf::Color::Black);
-    playButtonText.setStyle(sf::Text::Bold);
-    playButtonText.setPosition(365.f, 308.f);
-
-    // Center the play button text horizontally
-    sf::FloatRect textRect = playButtonText.getLocalBounds();
-    playButtonText.setOrigin(textRect.left + textRect.width / 2.f, textRect.top + textRect.height / 2.f);
-    playButtonText.setPosition(playButton.getPosition() + sf::Vector2f(playButton.getSize().x / 2.f, playButton.getSize().y / 2.f));
-
-    // Render the play button and text
-    this->window->draw(playButton);
-    this->window->draw(playButtonText);
+    this->window->draw(this->getPlayButton());
+    this->window->draw(this->getPlayText());
 
     // Display the frame in the window
     this->window->display();
@@ -259,6 +285,7 @@ void Game::updateEnemies()
     */
 
     //Updating the timer for enemy spawing
+    
     if (this->enemies.size() < this->maxEnemies)
     {
         if (this->enemySpawnTimer >= this->enemySpawnTimerMax)
