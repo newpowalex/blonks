@@ -21,8 +21,6 @@ void Game::initWindow()
     this->enemySpawnTimerMax = 20.f;
     this->enemySpawnTimer = this->enemySpawnTimerMax;
     this->maxEnemies = 5;
-
-    
 }
 
 void Game::initFonts()
@@ -32,8 +30,8 @@ void Game::initFonts()
         // Failed to load the desired font, fall back to a random font
         if (!font.loadFromFile("arial.ttf"))
         {
-        std::cerr << "Failed to load fallback font." << std::endl;
-        exit(EXIT_FAILURE); // or handle the error as needed
+            std::cerr << "Failed to load fallback font." << std::endl;
+            exit(EXIT_FAILURE); // or handle the error as needed
         }
     }
 }
@@ -46,13 +44,13 @@ void Game::initStartScreen()
     this->playButton.setFillColor(sf::Color::Black);
     this->playButton.setOutlineColor(sf::Color::White);
     this->playButton.setOutlineThickness(2.f);
-    
+
     // Initialize the play text
     this->playText.setFont(font);
     this->playText.setString("Play");
     this->playText.setCharacterSize(24);
     this->playText.setFillColor(sf::Color::White); // Set the initial color to white
-    this->playText.setPosition(333.5f, 310.f); // Adjust position if needed
+    this->playText.setPosition(333.5f, 310.f);     // Adjust position if needed
 }
 
 void Game::initEnemies()
@@ -86,11 +84,9 @@ const bool Game::running() const
     return this->window->isOpen();
 }
 
-
 ////////////////////////////////////////////////////////////
 // Functions ///////////////////////////////////////////////
 ////////////////////////////////////////////////////////////
-
 
 ////////////////
 // Game State //
@@ -105,8 +101,6 @@ Game::GameState Game::getGameState() const
 {
     return gameState;
 }
-
-
 
 /////////////
 // Polling //
@@ -130,48 +124,51 @@ void Game::pollEvents()
             break;
         // If mouse clicks on play button
         case sf::Event::MouseButtonPressed:
-            if (this->gameState == GameState::StartScreen && this->ev.mouseButton.button == sf::Mouse::Left)
-            {
-                // Get the mouse position relative to the window
-                sf::Vector2i mousePosWindow = sf::Mouse::getPosition(*this->window);
-
-                // Convert the mouse position to view coordinates
-                sf::Vector2f mousePosView = this->window->mapPixelToCoords(mousePosWindow);
-
-                // Check if the mouse is inside the play button
-                if (getPlayButton().getGlobalBounds().contains(mousePosView))
-                {
-                    // Start the game by changing the game state
-                    setGameState(GameState::InGame);
-                }
-            }
+            handleMouseButtonPressed();
             break;
         // If mouse hovers over play button
         case sf::Event::MouseMoved:
-                if (this->gameState == GameState::StartScreen)
-                {
-                    sf::Vector2i mousePosWindow = sf::Mouse::getPosition(*this->window);
-                    sf::Vector2f mousePosView = this->window->mapPixelToCoords(mousePosWindow);
-
-                    if (getPlayButton().getGlobalBounds().contains(mousePosView))
-                    {
-                        // Change the color of the text and fill of the play button when hovered
-                        playButton.setFillColor(sf::Color::White);
-                        playText.setFillColor(sf::Color::Black);
-                    }
-                    else
-                    {
-                        // Reset the colors when not hovered
-                        playButton.setFillColor(sf::Color::Black);
-                        playText.setFillColor(sf::Color::White);
-                    }
-                }
-                break;
+            handleMouseMoved();
+            break;
         }
     }
 }
 
+void Game::handleMouseButtonPressed()
+{
+    if (this->gameState == GameState::StartScreen && this->ev.mouseButton.button == sf::Mouse::Left)
+    {
+        sf::Vector2i mousePosWindow = sf::Mouse::getPosition(*this->window);
+        sf::Vector2f mousePosView = this->window->mapPixelToCoords(mousePosWindow);
 
+        if (getPlayButton().getGlobalBounds().contains(mousePosView))
+        {
+            setGameState(GameState::InGame);
+        }
+    }
+}
+
+void Game::handleMouseMoved()
+{
+    if (this->gameState == GameState::StartScreen)
+    {
+        sf::Vector2i mousePosWindow = sf::Mouse::getPosition(*this->window);
+        sf::Vector2f mousePosView = this->window->mapPixelToCoords(mousePosWindow);
+
+        if (getPlayButton().getGlobalBounds().contains(mousePosView))
+        {
+            // Change the color of the text and fill of the play button when hovered
+            playButton.setFillColor(sf::Color::White);
+            playText.setFillColor(sf::Color::Black);
+        }
+        else
+        {
+            // Reset the colors when not hovered
+            playButton.setFillColor(sf::Color::Black);
+            playText.setFillColor(sf::Color::White);
+        }
+    }
+}
 
 //////////////
 // Spawning //
@@ -189,32 +186,27 @@ void Game::spawnEnemy()
 
     this->enemy.setPosition(
         static_cast<float>(rand() % static_cast<int>(this->window->getSize().x - this->enemy.getSize().x)),
-        0.f
-    );
+        0.f);
 
-    //Spawn the enemy
+    // Spawn the enemy
     this->enemies.push_back(this->enemy);
 
-    //Remove enemies at the end of the screen
+    // Remove enemies at the end of the screen
 }
-
-
 
 //////////////////
 // Start Screen //
 //////////////////
 
-const sf::RectangleShape& Game::getPlayButton() const
+const sf::RectangleShape &Game::getPlayButton() const
 {
     return playButton; // Return a reference to the play button rectangle
 }
 
-sf::Text& Game::getPlayText()
+sf::Text &Game::getPlayText()
 {
     return playText;
 }
-
-
 
 ///////////////
 // Rendering //
@@ -242,14 +234,14 @@ void Game::renderStartScreen()
         this->window->setMouseCursor(cursor);
     }
 
-     // Create a title text object
+    // Create a title text object
     sf::Text titleText;
     titleText.setFont(font);
-    titleText.setString("Buzo");  // Set the title text
+    titleText.setString("Buzo"); // Set the title text
     titleText.setCharacterSize(40);
     titleText.setFillColor(sf::Color::White);
     titleText.setStyle(sf::Text::Bold);
-    titleText.setPosition(300.f, 200.f);  // Set the position of the title text
+    titleText.setPosition(300.f, 200.f); // Set the position of the title text
 
     // Render the play button and title text
     this->window->draw(titleText);
@@ -278,8 +270,6 @@ void Game::render()
     this->window->display();
 }
 
-
-
 //////////////
 // Updating //
 //////////////
@@ -295,13 +285,13 @@ void Game::updateEnemies()
         Removes the enemies at the edge of the screen
     */
 
-    //Updating the timer for enemy spawing
-    
+    // Updating the timer for enemy spawing
+
     if (this->enemies.size() < this->maxEnemies)
     {
         if (this->enemySpawnTimer >= this->enemySpawnTimerMax)
         {
-            //Spawn the enemy and reset the timer
+            // Spawn the enemy and reset the timer
             this->spawnEnemy();
             this->enemySpawnTimer = 0.f;
         }
@@ -309,12 +299,12 @@ void Game::updateEnemies()
             this->enemySpawnTimer += 1.f;
     }
 
-    //Move the enemies
+    // Move the enemies
     for (int i = 0; i < this->enemies.size(); i++)
     {
         this->enemies[i].move(0.f, 1.f);
 
-        //Check if clicked upon
+        // Check if clicked upon
         if (sf::Mouse::isButtonPressed(sf::Mouse::Left))
         {
             if (this->enemies[i].getGlobalBounds().contains(this->mousePosView))
@@ -343,7 +333,6 @@ void Game::updateStartScreen()
     this->pollEvents();
 
     this->updateMousePos();
-
 }
 
 void Game::update()
