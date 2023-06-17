@@ -1,5 +1,6 @@
 #include "Game.h"
 // Private functions
+
 void Game::initVariables()
 {
     this->window = nullptr;
@@ -71,6 +72,7 @@ Game::Game()
     this->initWindow();
     this->initEnemies();
     this->initFonts();
+    this->initStartScreen();
 }
 
 Game::~Game()
