@@ -1,5 +1,5 @@
 ////////////////////////////////////////////////////////////
-// Headers
+// Headers /////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////
 #include <iostream>
 #include <fstream>
@@ -12,17 +12,21 @@ int main()
 
     //Init game engine
     Game game;
-    //std::cout << "Started";
 
     //Game loop
     while (game.running())
     {
-        //Update
-        game.update();
-        //std::cout << "updating";
-
-        //Render
-        game.render();
+        switch (game.getGameState())
+        {
+        case Game::GameState::StartScreen:
+            game.updateStartScreen();
+            game.renderStartScreen();
+            break;
+        case Game::GameState::InGame:
+            game.update();
+            game.render();
+            break;
+        }
     }
 
     //End of application
