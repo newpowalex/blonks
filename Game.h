@@ -35,6 +35,10 @@ class Game
     float enemySpawnTimerMax;
     int maxEnemies;
 
+    //Start Screen Objects
+    sf::RectangleShape playButton;
+    sf::Text playText;
+
     //Game objects
     std::vector<sf::RectangleShape> enemies;
     sf::RectangleShape enemy;
@@ -43,6 +47,7 @@ class Game
     void initVariables();
     void initWindow();
     void initEnemies();
+    void initFonts();
 
 
     public:
@@ -77,6 +82,10 @@ class Game
 
         //Spawning
         void spawnEnemy();
+
+        //Start Screen
+        const sf::RectangleShape& getPlayButton() const;
+        sf::Text& getPlayText();
         
         //Updating
         void updateEnemies();
