@@ -38,9 +38,10 @@ class Game
     int maxEnemies;
 
     //Start Screen Objects
-    bool playButtonVisible;
+    bool playButtonClicked;
     sf::RectangleShape playButton;
     sf::Text titleText;
+    sf::Vector2f titlePos;
     sf::Text playText;
 
     //Game objects
