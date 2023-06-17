@@ -25,7 +25,7 @@ void Game::initWindow()
 
 void Game::initFonts()
 {
-    if (!font.loadFromFile("PressStart2P.ttf"))
+    if (!font.loadFromFile("assets/fonts/PressStart2P.ttf"))
     {
         // Failed to load the desired font, fall back to a random font
         if (!font.loadFromFile("arial.ttf"))
@@ -328,9 +328,11 @@ void Game::updateEnemies()
             this->enemySpawnTimer += 1.f;
     }
 
-    // Move the enemies
+    // Move and updating enemies
     for (int i = 0; i < this->enemies.size(); i++)
     {
+        bool deleted = false;
+
         this->enemies[i].move(0.f, 1.f);
 
         // Check if clicked upon
@@ -338,9 +340,23 @@ void Game::updateEnemies()
         {
             if (this->enemies[i].getGlobalBounds().contains(this->mousePosView))
             {
-                this->enemies.erase(this->enemies.begin() + i);
+                deleted = true;
+
+                // Gain points
+                this->points += 10.f;
+                //std::cout << "Points: " << this->points << std::endl;
             }
         }
+
+        // Delete enemy when it goes off screen
+        if(this->enemies[i].getPosition().y > this->window->getSize().y)
+        {
+            deleted = true;
+        }
+
+        // Final delete
+        if(deleted)
+            this->enemies.erase(this->enemies.begin() + i);
     }
 }
 
