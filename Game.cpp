@@ -103,6 +103,25 @@ void Game::pollEvents()
             else if (this->gameState == GameState::StartScreen && this->ev.key.code == sf::Keyboard::Space)
                 this->gameState = GameState::InGame;
             break;
+        case sf::Event::MouseButtonPressed:
+            if (this->gameState == GameState::StartScreen && this->ev.mouseButton.button == sf::Mouse::Left)
+            {
+                // Get the mouse position relative to the window
+                sf::Vector2i mousePosWindow = sf::Mouse::getPosition(*this->window);
+
+                // Convert the mouse position to view coordinates
+                sf::Vector2f mousePosView = this->window->mapPixelToCoords(mousePosWindow);
+
+                // Check if the mouse is inside the play button
+                sf::RectangleShape playButton(sf::Vector2f(100.f, 40.f));
+                playButton.setPosition(350.f, 300.f);
+                if (playButton.getGlobalBounds().contains(mousePosView))
+                {
+                    // Start the game by changing the game state
+                    setGameState(GameState::InGame);
+                }
+            }
+            break;
         }
     }
 }
@@ -157,6 +176,14 @@ void Game::renderStartScreen()
     // Draw the start screen objects (e.g., title, instructions, etc.)
     // using the window's draw function
 
+    // Set the cursor to the arrow cursor
+    this->window->setMouseCursorVisible(true);
+    sf::Cursor cursor;
+    if (cursor.loadFromSystem(sf::Cursor::Arrow))
+    {
+        this->window->setMouseCursor(cursor);
+    }
+
      // Create a title text object
     sf::Text titleText;
     titleText.setFont(font);
@@ -168,6 +195,29 @@ void Game::renderStartScreen()
 
     // Render the title text
     this->window->draw(titleText);
+
+    // Create a play button
+    sf::RectangleShape playButton(sf::Vector2f(100.f, 40.f));
+    playButton.setPosition(330.f, 300.f);
+    playButton.setFillColor(sf::Color::White);
+
+    // Create the play button text
+    sf::Text playButtonText;
+    playButtonText.setFont(font);
+    playButtonText.setString("Play");
+    playButtonText.setCharacterSize(20);
+    playButtonText.setFillColor(sf::Color::Black);
+    playButtonText.setStyle(sf::Text::Bold);
+    playButtonText.setPosition(365.f, 308.f);
+
+    // Center the play button text horizontally
+    sf::FloatRect textRect = playButtonText.getLocalBounds();
+    playButtonText.setOrigin(textRect.left + textRect.width / 2.f, textRect.top + textRect.height / 2.f);
+    playButtonText.setPosition(playButton.getPosition() + sf::Vector2f(playButton.getSize().x / 2.f, playButton.getSize().y / 2.f));
+
+    // Render the play button and text
+    this->window->draw(playButton);
+    this->window->draw(playButtonText);
 
     // Display the frame in the window
     this->window->display();
@@ -252,12 +302,10 @@ void Game::updateMousePos()
 
 void Game::updateStartScreen()
 {
-    // Check for user input to start the game
-    if (sf::Keyboard::isKeyPressed(sf::Keyboard::Space))
-    {
-        // Start the game by changing the game state
-        setGameState(GameState::InGame);
-    }
+    this->pollEvents();
+
+    this->updateMousePos();
+
 }
 
 void Game::update()
