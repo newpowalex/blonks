@@ -64,13 +64,15 @@ void Game::spawnEnemy()
 
     this->enemy.setPosition(
         static_cast<float>(rand() % static_cast<int>(this->window->getSize().x - this->enemy.getSize().x)),
-        static_cast<float>(rand() % static_cast<int>(this->window->getSize().y - this->enemy.getSize().y))
+        0.f
     );
 
     this->enemy.setFillColor(sf::Color::Green);
 
     //Spawn the enemy
     this->enemies.push_back(this->enemy);
+
+    //Remove enemies at the end of the screen
 }
 
 void Game::pollEvents()
@@ -97,8 +99,9 @@ void Game::updateEnemies()
         @return void
 
         Updates the enemy spawn timer and spawns the enemies
-        when the total amount of enemies is smalled than the maximum.
-        Moves the enemies downwards
+        when the total amount of enemies is smaller than the maximum.
+        Moves the enemies downwards.
+        Removes the enemies at the edge of the screen
     */
 
     //Updating the timer for enemy spawing
@@ -113,6 +116,21 @@ void Game::updateEnemies()
         else
             this->enemySpawnTimer += 1.f;
     }
+
+    //Move the enemies
+    for (int i = 0; i < this->enemies.size(); i++)
+    {
+        this->enemies[i].move(0.f, 1.f);
+
+        //Check if clicked upon
+        if (sf::Mouse::isButtonPressed(sf::Mouse::Left))
+        {
+            if (this->enemies[i].getGlobalBounds().contains(this->mousePosView))
+            {
+                this->enemies.erase(this->enemies.begin() + i);
+            }
+        }
+    }
 }
 
 void Game::updateMousePos()
@@ -125,6 +143,7 @@ void Game::updateMousePos()
     */
 
     this->mousePosWindow = sf::Mouse::getPosition(*this->window);
+    this->mousePosView = this->window->mapPixelToCoords(this->mousePosWindow);
 }
 
 void Game::update()
@@ -138,6 +157,10 @@ void Game::update()
 
 void Game::renderEnemies()
 {
+    for (auto &e : this->enemies)
+    {
+        this->window->draw(e);
+    }
 }
 
 void Game::render()
