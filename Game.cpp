@@ -3,6 +3,7 @@
 void Game::initVariables()
 {
     this->window = nullptr;
+    this->gameState = GameState::StartScreen;
 }
 
 void Game::initWindow()
@@ -19,6 +20,16 @@ void Game::initWindow()
     this->enemySpawnTimerMax = 1000.f;
     this->enemySpawnTimer = this->enemySpawnTimerMax;
     this->maxEnemies = 5;
+
+    if (!font.loadFromFile("PressStart2P.ttf"))
+    {
+        // Failed to load the desired font, fall back to a random font
+        if (!font.loadFromFile("arial.ttf"))
+        {
+        std::cerr << "Failed to load fallback font." << std::endl;
+        exit(EXIT_FAILURE); // or handle the error as needed
+        }
+    }
 }
 
 void Game::initEnemies()
@@ -50,7 +61,58 @@ const bool Game::running() const
     return this->window->isOpen();
 }
 
-// Functions
+
+////////////////////////////////////////////////////////////
+// Functions ///////////////////////////////////////////////
+////////////////////////////////////////////////////////////
+
+
+////////////////
+// Game State //
+////////////////
+
+void Game::setGameState(GameState state)
+{
+    gameState = state;
+}
+
+Game::GameState Game::getGameState() const
+{
+    return gameState;
+}
+
+
+
+/////////////
+// Polling //
+/////////////
+
+void Game::pollEvents()
+{
+    // Event Polling
+    while (this->window->pollEvent(this->ev))
+    {
+        switch (this->ev.type)
+        {
+        case sf::Event::Closed:
+            this->window->close();
+            break;
+        case sf::Event::KeyPressed:
+            if (this->ev.key.code == sf::Keyboard::Escape)
+                this->window->close();
+            else if (this->gameState == GameState::StartScreen && this->ev.key.code == sf::Keyboard::Space)
+                this->gameState = GameState::InGame;
+            break;
+        }
+    }
+}
+
+
+
+//////////////
+// Spawning //
+//////////////
+
 void Game::spawnEnemy()
 {
     /*
@@ -75,23 +137,65 @@ void Game::spawnEnemy()
     //Remove enemies at the end of the screen
 }
 
-void Game::pollEvents()
+
+
+///////////////
+// Rendering //
+///////////////
+
+void Game::renderEnemies()
 {
-    // Event Polling
-    while (this->window->pollEvent(this->ev))
+    for (auto &e : this->enemies)
     {
-        switch (this->ev.type)
-        {
-        case sf::Event::Closed:
-            this->window->close();
-            break;
-        case sf::Event::KeyPressed:
-            if (this->ev.key.code == sf::Keyboard::Escape)
-                this->window->close();
-            break;
-        }
+        this->window->draw(e);
     }
 }
+
+void Game::renderStartScreen()
+{
+    this->window->clear();
+    // Draw the start screen objects (e.g., title, instructions, etc.)
+    // using the window's draw function
+
+     // Create a title text object
+    sf::Text titleText;
+    titleText.setFont(font);
+    titleText.setString("Buzo");  // Set the title text
+    titleText.setCharacterSize(40);
+    titleText.setFillColor(sf::Color::White);
+    titleText.setStyle(sf::Text::Bold);
+    titleText.setPosition(300.f, 200.f);  // Set the position of the title text
+
+    // Render the title text
+    this->window->draw(titleText);
+
+    // Display the frame in the window
+    this->window->display();
+}
+
+void Game::render()
+{
+    /*
+        @return void
+        Renders the game objects
+
+        - clear old frame
+        - render objects
+        -display frame in window
+    */
+    this->window->clear();
+
+    // Draw game objects
+    this->renderEnemies();
+
+    this->window->display();
+}
+
+
+
+//////////////
+// Updating //
+//////////////
 
 void Game::updateEnemies()
 {
@@ -146,6 +250,16 @@ void Game::updateMousePos()
     this->mousePosView = this->window->mapPixelToCoords(this->mousePosWindow);
 }
 
+void Game::updateStartScreen()
+{
+    // Check for user input to start the game
+    if (sf::Keyboard::isKeyPressed(sf::Keyboard::Space))
+    {
+        // Start the game by changing the game state
+        setGameState(GameState::InGame);
+    }
+}
+
 void Game::update()
 {
     this->pollEvents();
@@ -153,30 +267,4 @@ void Game::update()
     this->updateMousePos();
 
     this->updateEnemies();
-}
-
-void Game::renderEnemies()
-{
-    for (auto &e : this->enemies)
-    {
-        this->window->draw(e);
-    }
-}
-
-void Game::render()
-{
-    /*
-        @return void
-        Renders the game objects
-
-        - clear old frame
-        - render objects
-        -display frame in window
-    */
-    this->window->clear();
-
-    // Draw game objects
-    this->renderEnemies();
-
-    this->window->display();
 }
