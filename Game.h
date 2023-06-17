@@ -48,6 +48,7 @@ class Game
     void initWindow();
     void initEnemies();
     void initFonts();
+    void initStartScreen();
 
 
     public:
