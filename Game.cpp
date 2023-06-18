@@ -5,6 +5,13 @@ void Game::initVariables()
 {
     this->window = nullptr;
     this->gameState = GameState::StartScreen;
+
+    // Game logic
+    this->points = 0;
+    this->enemySpawnTimerMax = 20.f;
+    this->enemySpawnTimer = this->enemySpawnTimerMax;
+    this->maxEnemies = 5;
+    this->mouseHeld = false;
 }
 
 void Game::initWindow()
@@ -15,12 +22,6 @@ void Game::initWindow()
     this->window = new sf::RenderWindow(sf::VideoMode(800, 600), "Buzo", sf::Style::Titlebar | sf::Style::Close);
 
     this->window->setFramerateLimit(144);
-
-    // Game logic
-    this->points = 0;
-    this->enemySpawnTimerMax = 20.f;
-    this->enemySpawnTimer = this->enemySpawnTimerMax;
-    this->maxEnemies = 5;
 }
 
 void Game::initFonts()
@@ -63,7 +64,7 @@ void Game::initStartScreen()
     this->playText.setString("Play");
     this->playText.setCharacterSize(24);
     this->playText.setFillColor(sf::Color::White); // Set the initial color to white
-    this->playText.setPosition(353.f, 310.f);     // Adjust position if needed
+    this->playText.setPosition(353.f, 310.f);      // Adjust position if needed
 }
 
 void Game::initEnemies()
@@ -124,25 +125,45 @@ void Game::pollEvents()
     // Event Polling
     while (this->window->pollEvent(this->ev))
     {
-        switch (this->ev.type)
+        if (this->gameState == GameState::StartScreen)
         {
-        // If the window closes
-        case sf::Event::Closed:
-            this->window->close();
-            break;
-        // If escape is pressed to exit
-        case sf::Event::KeyPressed:
-            if (this->ev.key.code == sf::Keyboard::Escape)
+            // Process events specific to the start screen
+            switch (this->ev.type)
+            {
+            // If the window closes
+            case sf::Event::Closed:
                 this->window->close();
-            break;
-        // If mouse clicks on play button
-        case sf::Event::MouseButtonPressed:
-            handleMouseButtonPressed();
-            break;
-        // If mouse hovers over play button
-        case sf::Event::MouseMoved:
-            handleMouseMoved();
-            break;
+                break;
+                // If escape is pressed to exit
+            case sf::Event::KeyPressed:
+                if (this->ev.key.code == sf::Keyboard::Escape)
+                    this->window->close();
+                break;
+            // If mouse clicks on play button
+            case sf::Event::MouseButtonPressed:
+                handleMouseButtonPressed();
+                break;
+            // If mouse hovers over play button
+            case sf::Event::MouseMoved:
+                handleMouseMoved();
+                break;
+            }
+        }
+        else if (this->gameState == GameState::InGame)
+        {
+            // Process events specific to the game
+            switch (this->ev.type)
+            {
+            // If the window closes
+            case sf::Event::Closed:
+                this->window->close();
+                break;
+            // If escape is pressed to exit
+            case sf::Event::KeyPressed:
+                if (this->ev.key.code == sf::Keyboard::Escape)
+                    this->window->close();
+                break;
+            }
         }
     }
 }
@@ -156,7 +177,7 @@ void Game::handleMouseButtonPressed()
 
         if (getPlayButton().getGlobalBounds().contains(mousePosView))
         {
-            //Change the title color and remove play button
+            // Change the title color and remove play button
             titleText.setFillColor(sf::Color::Red);
             titleText.setOutlineColor(sf::Color::White);
             titleText.setOutlineThickness(2.f);
@@ -267,7 +288,7 @@ void Game::renderStartScreen()
     // Render the title text
     this->window->draw(this->getTitleText());
 
-    //Check if play button should be visible
+    // Check if play button should be visible
     if (!playButtonClicked)
     {
         // Draw the play button
@@ -314,7 +335,7 @@ void Game::updateEnemies()
         Removes the enemies at the edge of the screen
     */
 
-    // Updating the timer for enemy spawing
+    // Updating the timer for enemy spawning
 
     if (this->enemies.size() < this->maxEnemies)
     {
@@ -328,35 +349,46 @@ void Game::updateEnemies()
             this->enemySpawnTimer += 1.f;
     }
 
-    // Move and updating enemies
+    // Move and update enemies
     for (int i = 0; i < this->enemies.size(); i++)
     {
         bool deleted = false;
 
         this->enemies[i].move(0.f, 1.f);
 
-        // Check if clicked upon
+        // Delete enemy when it goes off-screen
+        if (this->enemies[i].getPosition().y > this->window->getSize().y)
+        {
+            this->enemies.erase(this->enemies.begin() + i);
+        }
+
+        // Check if an enemy is clicked and delete it
         if (sf::Mouse::isButtonPressed(sf::Mouse::Left))
         {
-            if (this->enemies[i].getGlobalBounds().contains(this->mousePosView))
+            if (this->mouseHeld == false)
             {
-                deleted = true;
+                this->mouseHeld = true;
+                bool deleted = false;
+                for (size_t i = 0; i < this->enemies.size() && deleted == false; i++)
+                {
+                    if (this->enemies[i].getGlobalBounds().contains(this->mousePosView))
+                    {
+                        // Delete the enemy
+                        deleted = true;
+                        this->enemies.erase(this->enemies.begin() + i);
+                        std::cout << "Enemy deleted " << std::endl;
 
-                // Gain points
-                this->points += 10.f;
-                //std::cout << "Points: " << this->points << std::endl;
+                        // Gain points
+                        this->points += 10.f;
+                        std::cout << "Points: " << this->points << std::endl;
+                    }
+                }
             }
         }
-
-        // Delete enemy when it goes off screen
-        if(this->enemies[i].getPosition().y > this->window->getSize().y)
+        else
         {
-            deleted = true;
+            this->mouseHeld = false;
         }
-
-        // Final delete
-        if(deleted)
-            this->enemies.erase(this->enemies.begin() + i);
     }
 }
 
