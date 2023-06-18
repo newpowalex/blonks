@@ -21,7 +21,7 @@ void Game::initWindow()
     this->videoMode.height = 600;
     this->videoMode.width = 800;
 
-    this->window = new sf::RenderWindow(sf::VideoMode(800, 600), "Buzo", sf::Style::Titlebar | sf::Style::Close);
+    this->window = new sf::RenderWindow(sf::VideoMode(800, 600), "Blonks", sf::Style::Titlebar | sf::Style::Close);
 
     this->window->setFramerateLimit(144);
 }
@@ -43,7 +43,7 @@ void Game::initStartScreen()
 {
     // Initialize the title text
     this->titleText.setFont(font);
-    this->titleText.setString("Buzo"); // Set the title text
+    this->titleText.setString("Blonks"); // Set the title text
     this->titleText.setCharacterSize(80);
     this->titleText.setFillColor(sf::Color::White);
     this->titleText.setStyle(sf::Text::Bold);
