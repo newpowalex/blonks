@@ -32,10 +32,11 @@ class Game
     sf::Vector2f mousePosView;
 
     //Game logic
-    int points;
+    unsigned points;
     float enemySpawnTimer;
     float enemySpawnTimerMax;
     int maxEnemies;
+    bool mouseHeld;
 
     //Start Screen Objects
     bool playButtonClicked;
@@ -57,6 +58,7 @@ class Game
 
 
     public:
+
         //Constructors / Destructors
         Game();
         virtual ~Game();
@@ -74,7 +76,6 @@ class Game
 
         //Game State
         GameState gameState;
-
         GameState getGameState() const;
         void setGameState(GameState state);
 
