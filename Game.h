@@ -33,6 +33,7 @@ class Game
 
     //Game logic
     unsigned points;
+    int health;
     float enemySpawnTimer;
     float enemySpawnTimerMax;
     int maxEnemies;
