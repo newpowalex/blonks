@@ -8,6 +8,7 @@ void Game::initVariables()
 
     // Game logic
     this->points = 0;
+    this->health = 5;
     this->enemySpawnTimerMax = 20.f;
     this->enemySpawnTimer = this->enemySpawnTimerMax;
     this->maxEnemies = 5;
@@ -360,6 +361,8 @@ void Game::updateEnemies()
         if (this->enemies[i].getPosition().y > this->window->getSize().y)
         {
             this->enemies.erase(this->enemies.begin() + i);
+            this->health -= 1;
+            std::cout << "Health: " << this->health << std::endl;
         }
 
         // Check if an enemy is clicked and delete it
@@ -376,10 +379,9 @@ void Game::updateEnemies()
                         // Delete the enemy
                         deleted = true;
                         this->enemies.erase(this->enemies.begin() + i);
-                        std::cout << "Enemy deleted " << std::endl;
 
                         // Gain points
-                        this->points += 10.f;
+                        this->points += 10;
                         std::cout << "Points: " << this->points << std::endl;
                     }
                 }
