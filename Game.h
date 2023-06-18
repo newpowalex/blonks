@@ -32,6 +32,7 @@ class Game
     sf::Vector2f mousePosView;
 
     //Game logic
+    bool endGame;
     unsigned points;
     int health;
     float enemySpawnTimer;
@@ -66,6 +67,7 @@ class Game
 
         //Accessors
         const bool running() const;
+        const bool getEndGame() const;
 
         //Functions
         //Game State
