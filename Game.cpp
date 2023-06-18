@@ -7,6 +7,7 @@ void Game::initVariables()
     this->gameState = GameState::StartScreen;
 
     // Game logic
+    this->endGame = false;
     this->points = 0;
     this->health = 5;
     this->enemySpawnTimerMax = 20.f;
@@ -97,6 +98,11 @@ Game::~Game()
 const bool Game::running() const
 {
     return this->window->isOpen();
+}
+
+const bool Game::getEndGame() const
+{
+    return this->endGame;
 }
 
 ////////////////////////////////////////////////////////////
@@ -418,7 +424,14 @@ void Game::update()
 {
     this->pollEvents();
 
-    this->updateMousePos();
+    if (!this->endGame)
+    {
+        this->updateMousePos();
 
-    this->updateEnemies();
+        this->updateEnemies();
+    }
+
+    // End Game condition
+    if (this->health <= 0)
+        this->endGame = true;
 }
