@@ -14,4 +14,4 @@ $(EXECUTABLE): $(OBJECTS)
 	$(CC) $(CFLAGS) $< -o $@
 
 clean:
-	del $(OBJECTS) $(EXECUTABLE).exe
+	rm $(OBJECTS) $(EXECUTABLE).exe
