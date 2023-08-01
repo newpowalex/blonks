@@ -50,6 +50,9 @@ class Game
     //Game objects
     std::vector<sf::RectangleShape> enemies;
     sf::RectangleShape enemy;
+    sf::Text pointsText;
+    sf::Text healthText;
+
 
     //Private functions
     void initVariables();
@@ -104,6 +107,7 @@ class Game
         void updateEnemies();
         void updateMousePos();
         void updateStartScreen();
+        void updateText();
         void update();
 
         

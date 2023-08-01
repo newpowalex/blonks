@@ -37,6 +37,20 @@ void Game::initFonts()
             exit(EXIT_FAILURE);
         }
     }
+    // Initialize the points text
+    pointsText.setFont(font);
+    pointsText.setCharacterSize(24);
+    pointsText.setFillColor(sf::Color::White);
+    pointsText.setPosition(10.f, 10.f); // Adjust the position as needed
+
+    // Initialize the health text
+    healthText.setFont(font);
+    healthText.setCharacterSize(24);
+    healthText.setFillColor(sf::Color::White);
+    healthText.setPosition(10.f, 40.f); // Adjust the position as needed
+
+    // Set the position of the health text to the top right of the window
+    healthText.setPosition(static_cast<float>(window->getSize().x) - 150.f, 10.f);
 }
 
 void Game::initStartScreen()
@@ -324,6 +338,12 @@ void Game::render()
     // Draw game objects
     this->renderEnemies();
 
+    // Render the position of the health text to the top right of the window
+healthText.setPosition(static_cast<float>(window->getSize().x) - healthText.getLocalBounds().width - 10.f, 10.f);
+    // Draw points and health text
+    this->window->draw(pointsText);
+    this->window->draw(healthText);
+
     this->window->display();
 }
 
@@ -343,7 +363,6 @@ void Game::updateEnemies()
     */
 
     // Updating the timer for enemy spawning
-
     if (this->enemies.size() < this->maxEnemies)
     {
         if (this->enemySpawnTimer >= this->enemySpawnTimerMax)
@@ -368,7 +387,7 @@ void Game::updateEnemies()
         {
             this->enemies.erase(this->enemies.begin() + i);
             this->health -= 1;
-            std::cout << "Health: " << this->health << std::endl;
+            //std::cout << "Health: " << this->health << std::endl;
         }
 
         // Check if an enemy is clicked and delete it
@@ -388,7 +407,7 @@ void Game::updateEnemies()
 
                         // Gain points
                         this->points += 10;
-                        std::cout << "Points: " << this->points << std::endl;
+                        //std::cout << "Points: " << this->points << std::endl;
                     }
                 }
             }
@@ -420,6 +439,12 @@ void Game::updateStartScreen()
     this->updateMousePos();
 }
 
+void Game::updateText()
+{
+    pointsText.setString("Points: " + std::to_string(points));
+    healthText.setString("Health: " + std::to_string(health));
+}
+
 void Game::update()
 {
     this->pollEvents();
@@ -429,6 +454,8 @@ void Game::update()
         this->updateMousePos();
 
         this->updateEnemies();
+
+        this->updateText();
     }
 
     // End Game condition
