@@ -3,7 +3,7 @@ CFLAGS=-c -IC:\Users\Alex\source\libraries\c++\SFML\include -DSFML_STATIC
 LDFLAGS=-LC:\Users\Alex\source\libraries\c++\SFML\lib -lsfml-graphics-s -lsfml-window-s -lsfml-system-s -lsfml-audio-s -lopengl32 -lfreetype -lwinmm -lgdi32
 SOURCES=main.cpp Game.cpp
 OBJECTS=$(SOURCES:.cpp=.o)
-EXECUTABLE=main
+EXECUTABLE=blonks
 
 all: $(SOURCES) $(EXECUTABLE)
 
