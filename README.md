@@ -6,7 +6,7 @@ Blonks is a simple game built using SFML (Simple and Fast Multimedia Library) in
 
 To play the game, follow these steps:
 
-1. **Download**: Download the latest release of the game from the [Releases](https://github.com/your-username/blonks/releases) page.
+1. **Download**: Download the latest release of the game from the [Releases](https://github.com/newpowalex/blonks/releases) page.
 
 2. **Run the Game**: Once you have downloaded the executable (blonks.exe), simply double-click on it to start the game.
 
